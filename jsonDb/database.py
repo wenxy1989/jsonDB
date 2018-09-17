@@ -5,21 +5,21 @@ Author: hujiang001@gmail.com
 ChangeLog: 2016-10-01 created
 description:
     jsonDB是一个基于JSON格式的内存数据库.它具有以下特点:
-    1\轻量级. 无守护进程,无需任何额外的安装和配置,你只需要import jsonDb即可使用,非常方便.
-    2\NOSQL. 类似于mongoDb的非关系型数据库.
-    3\内存数据库. 所有数据基于内存进行操作和访问,性能相对较高.目前版本的性能测试数据请
+    1/轻量级. 无守护进程,无需任何额外的安装和配置,你只需要import jsonDb即可使用,非常方便.
+    2/NOSQL. 类似于mongoDb的非关系型数据库.
+    3/内存数据库. 所有数据基于内存进行操作和访问,性能相对较高.目前版本的性能测试数据请
     参考reference文档.
-    4\任意迁移. 数据库可以完整导出为外部文件,并且可以从外部文件导入.基于此,数据库可以
+    4/任意迁移. 数据库可以完整导出为外部文件,并且可以从外部文件导入.基于此,数据库可以
     进行任意的迁移,而无需做任何修改.
-    5\灵活的数据类型. 一个数据集合(collection)中的数据,并不需要相同的格式.比如以下几种数据
+    5/灵活的数据类型. 一个数据集合(collection)中的数据,并不需要相同的格式.比如以下几种数据
     可以同时存在于一个collection中:
     {'key1':1},{'key2':'value','pic':'value'},{'key3':'value'}
 
     ** 概念说明:
-    1\db: 即数据库. 创建一个jsonDb类的实例,即是创建了一个数据库.可以指定dbname和hash的长度.
-    2\collection: 数据集合(表). 一个collection可以理解为数据库中的一个表. collection不需要
+    1/db: 即数据库. 创建一个jsonDb类的实例,即是创建了一个数据库.可以指定dbname和hash的长度.
+    2/collection: 数据集合(表). 一个collection可以理解为数据库中的一个表. collection不需要
       单独创建,当insert第一条数据,或者ensureKey时,系统会自动创建.
-    3\data: 数据. collection中的一条数据,或者是一个数据的list. data必须是dict字典类型,是一个
+    3/data: 数据. collection中的一条数据,或者是一个数据的list. data必须是dict字典类型,是一个
     key-value键值对.
 
     ** 支持的功能:
@@ -32,7 +32,7 @@ description:
     导出数据库到外部文件
     从外部文件导入数据库
     关键过程性能打点(毫秒级耗时统计)
-    数据库统计显示(包括数据规模\占用内存等)
+    数据库统计显示(包括数据规模/占用内存等)
     格式化打印
 
     ** 关键词说明:
@@ -62,6 +62,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 
 import json
 import copy
@@ -99,7 +100,7 @@ class JSONDB:
                 ret = func(*args, **kwargs)
 
                 if prefDot['sw'] == True:
-                    if not prefDot.has_key(dotName):
+                    if not prefDot.__contains__(dotName):
                         prefDot[dotName] = 0
                     prefDot[dotName] += time.time()-now
 
@@ -132,7 +133,7 @@ class JSONDB:
         mem_collection - collection消耗的总内存
         mem_hash - hash表消耗的总内存
         collection_num - collection个数
-        collection_staus - 分别显示每个collection的data条数\key等信息
+        collection_staus - 分别显示每个collection的data条数/key等信息
         :return:
         '''
         import sys
@@ -147,7 +148,7 @@ class JSONDB:
             col = self.__coll(item)
             status["mem_collection"] += sys.getsizeof(col[col['$jdb_coll']])
             colStatus['data_mem'] = sys.getsizeof(col[col['$jdb_coll']])
-            if col.has_key('$jdb_hash'):
+            if col.__contains__('$jdb_hash'):
                 colStatus['index'] = True
                 colStatus['key'].extend(col['$jdb_key'])
                 colStatus['data_num'] = len(col[col['$jdb_coll']])
@@ -157,20 +158,20 @@ class JSONDB:
             status['collection_staus'].append(colStatus)
 
         #print
-        ret= '\n------ jdb statics ------'
-        ret+= '\ndb_name: '+status['db_name']
-        ret+= '\nmem_collection: '+str(status['mem_collection'])+' bytes'
-        ret+= '\nmem_hash: '+str(status['mem_hash'])+' bytes'
-        ret+= '\ncollection_num: '+str(status['collection_num'])
-        ret+= '\n**** collection statics **** '
+        ret= '/n------ jdb statics ------'
+        ret+= '/ndb_name: '+status['db_name']
+        ret+= '/nmem_collection: '+str(status['mem_collection'])+' bytes'
+        ret+= '/nmem_hash: '+str(status['mem_hash'])+' bytes'
+        ret+= '/ncollection_num: '+str(status['collection_num'])
+        ret+= '/n**** collection statics **** '
         for s in status['collection_staus']:
-            ret+= '\n name: '+s['name']
-            ret+= '\n data_num: '+str(s['data_num'])
-            ret+= '\n key: '+str(s['key'])
-            ret+= '\n index: '+str(s['index'])
-            ret+= '\n data_mem: '+str(s['data_mem'])+' bytes'
-            ret+= '\n hash_mem: '+str(s['hash_mem'])+' bytes'
-            ret+= '\n'
+            ret+= '/n name: '+s['name']
+            ret+= '/n data_num: '+str(s['data_num'])
+            ret+= '/n key: '+str(s['key'])
+            ret+= '/n index: '+str(s['index'])
+            ret+= '/n data_mem: '+str(s['data_mem'])+' bytes'
+            ret+= '/n hash_mem: '+str(s['hash_mem'])+' bytes'
+            ret+= '/n'
         return ret
     #以下json的代码用于解决json.load后转换为unicode的问题
     def __json_load_byteified(self,file_handle):
@@ -187,8 +188,11 @@ class JSONDB:
 
     def __byteify(self, data, ignore_dicts = False):
         # if this is a unicode string, return its string representation
-        if isinstance(data, unicode):
-            return data.encode('utf-8')
+		#if isinstance(data,byte):
+            #return data.decode('utf-8')
+            #print('value is %s' % v)
+        if isinstance(data, str):
+            return data
         # if this is a list of values, return list of byteified values
         if isinstance(data, list):
             return [ self.__byteify(item, ignore_dicts=True) for item in data ]
@@ -197,7 +201,7 @@ class JSONDB:
         if isinstance(data, dict) and not ignore_dicts:
             return {
                 self.__byteify(key, ignore_dicts=True): self.__byteify(value, ignore_dicts=True)
-                for key, value in data.iteritems()
+                for key, value in data.items()
                 }
         # if it's anything else, return it in its original form
         return data
@@ -225,7 +229,7 @@ class JSONDB:
 
     def __coll(self, collName):
         for coll in self.__g_memDb['$jdb_collections']:
-            if coll.has_key(collName):
+            if coll.__contains__(collName):
                 return coll
         return None
 
@@ -235,7 +239,7 @@ class JSONDB:
             if collName is None:
                 result.append(coll['$jdb_coll'])
             else:
-                if coll.has_key(collName):
+                if coll.__contains__(collName):
                     result.append(collName)
                     return result
         return result
@@ -253,19 +257,19 @@ class JSONDB:
             if x == filter:
                 return True
         else:
-            if filter.has_key('$lt'): #小于
+            if filter.__contains__('$lt'): #小于
                 if x < filter['$lt']:
                     return True
-            elif filter.has_key('$lte'):#小于或等于
+            elif filter.__contains__('$lte'):#小于或等于
                 if x <= filter['$lte']:
                     return True
-            elif filter.has_key('$gt'):#大于
+            elif filter.__contains__('$gt'):#大于
                 if x > filter['$gt']:
                     return True
-            elif filter.has_key('$gte'):#大于或等于
+            elif filter.__contains__('$gte'):#大于或等于
                 if x >= filter['$gte']:
                     return True
-            elif filter.has_key('$ne'):#不等于
+            elif filter.__contains__('$ne'):#不等于
                 if x != filter['$ne']:
                     return True
             else:
@@ -279,16 +283,16 @@ class JSONDB:
         各个key-value之间是AND关系{<key1>:<value1>, <key2>:{$lt:<value2>}, ......}
         各个key-value之间是OR关系{'$or':{<key1>:<value1>, <key2>:{$lt:<value2>}, ......}}
         可以组合使用{<key1>:<value1>, '$or':{<key2>:<value2>, <key3>:{$lt:<value3>}}}
-        如果有多个or条件,关键字可以使用'$or1'\'$or2'\'$or3'\...
+        如果有多个or条件,关键字可以使用'$or1'/'$or2'/'$or3'/...
         该函数通过递归方式实现
         '''
         ret = False
         for key in filter.keys():
             ret = True
-            if re.match('''^\$or[0-9]*$''',key) is not None:
+            if re.match('''^/$or[0-9]*$''',key) is not None:
                 ret = self.__filterDoRecursive(data,filter[key],isOr=1)
             else:
-                if not data.has_key(key):
+                if not data.__contains__(key):
                     ret = False
                 if self.__filterCondCheck(data[key], filter[key]) is False:
                     ret = False
@@ -325,10 +329,7 @@ class JSONDB:
     def __findInColl(self, coll, filter=None, limit=0, deepcpy=1):
         retList = []
         #如果是key值查找,那么直接从hash表查找
-        if coll.has_key('$jdb_key') \
-                and filter is not None \
-                and coll['$jdb_key']==filter.keys() \
-                and not self.__isCondFilter(filter):#不能是条件查找
+        if coll.__contains__('$jdb_key') and filter is not None and coll['$jdb_key']==filter.keys() and not self.__isCondFilter(filter):#不能是条件查找
             if deepcpy == 1:
                 tmpV = copy.deepcopy(self.__hashFind(filter,coll))
             else:
@@ -416,9 +417,8 @@ class JSONDB:
         #key必须都包含
         for key in keyList:
             for data in dataList:
-                if not data.has_key(key):
-                    self.__debug('key error, key is '+str(keyList)+ \
-                                 ', your data is '+str(data))
+                if not data.__contains__(key):
+                    self.__debug('key error, key is '+str(keyList)+ ', your data is '+str(data))
                     return False
                 tmpKey[key] = data[key]
 
@@ -445,8 +445,7 @@ class JSONDB:
         coll = self.__coll(collection)
         if coll is not None:
             #检查key是否冲突
-            if coll.has_key('$jdb_key') \
-                    and not self.__judgeKeyConflict(coll,data):
+            if coll.__contains__('$jdb_key') and not self.__judgeKeyConflict(coll,data):
                 if isMerge!=1:
                     self.__putLock()
                 return False
@@ -458,7 +457,7 @@ class JSONDB:
         coll = self.__coll(collection)
         coll[collection].extend(data)
         #添加到hash表
-        if coll.has_key('$jdb_key'):
+        if coll.__contains__('$jdb_key'):
             for item in data:
                 self.__hashAdd(coll[coll['$jdb_coll']][oldLen],coll)
                 oldLen += 1
@@ -479,7 +478,7 @@ class JSONDB:
 
     def perfDotStart(self):
         '''
-        开启性能打点,支持insert\update\find\delete\export to file\import to file
+        开启性能打点,支持insert/update/find/delete/export to file/import to file
         等关键流程的耗时统计.
         注意这里的统计是perfDotStart到perfDotEnd之间这些操作的累计值.
         比如,期间多次调用insert操作,那么insert的耗时是所有这些的累计值.
@@ -491,17 +490,17 @@ class JSONDB:
         '''
         结束性能打点,并且打印结果
         '''
-        print '------ perf dot statics ------'
+        print('------ perf dot statics ------')
         for key in self.__g_perfDot:
             if key=='sw':
                 continue
-            print '['+key+']''spend time: '+str(self.__g_perfDot[key])
-        print ''
+            print('['+key+']''spend time: '+str(self.__g_perfDot[key]))
+        print('')
 
         self.__g_perfDot['sw']=False
         #init
         keys = self.__g_perfDot.keys()
-        for k in keys:
+        for k in list(keys):
             if k!='sw':
                 self.__g_perfDot.pop(k)
 
@@ -516,7 +515,7 @@ class JSONDB:
         :param indent:1-优化的打印格式,0-不做优化
         :return:
         '''
-        print json.dumps(data,indent=indent)
+        print(json.dumps(data,indent=indent))
 
     def printAll(self):
         self.rprint(self.__g_memDb,indent=1)
@@ -588,7 +587,7 @@ class JSONDB:
             return False
         for item in findList:
             #从hash表中删除
-            if coll.has_key('$jdb_key'):
+            if coll.__contains__('$jdb_key'):
                 self.__hashRemove(item,coll)
             coll[collection].remove(item)
 
@@ -612,7 +611,7 @@ class JSONDB:
         各个key-value之间是AND关系{<key1>:<value1>, <key2>:{$lt:<value2>}, ......}
         各个key-value之间是OR关系{'$or':{<key1>:<value1>, <key2>:{$lt:<value2>}, ......}}
         可以组合使用{<key1>:<value1>, '$or':{<key2>:<value2>, <key3>:{$lt:<value3>}}}
-        如果有多个or条件,关键字可以使用'$or1'\'$or2'\'$or3'\...,范围'$or[0-9]'
+        如果有多个or条件,关键字可以使用'$or1'/'$or2'/'$or3'/...,范围'$or[0-9]'
         :param limit:返回结果的个数限制.0 - 无限制
         :return:结果list,list中包含了所有匹配的data.需要注意的是,list中不包含collection名.
         '''
@@ -642,18 +641,17 @@ class JSONDB:
         for coll in dbObj.__g_memDb['$jdb_collections']:
             #如果定义了key,那么key必须一致
             myColl = self.__coll(coll['$jdb_coll'])
-            if coll.has_key('$jdb_key'):
+            if coll.__contains__('$jdb_key'):
                 if myColl is None:
                     self.ensureKey(coll['$jdb_coll'], coll['$jdb_key'])
                 else:
-                    if myColl.has_key('$jdb_key'):
+                    if myColl.__contains__('$jdb_key'):
                         if myColl['$jdb_key'] != coll['$jdb_key']:
                             return False
                     else:
                         return False
             else:
-                if myColl is not None \
-                        and myColl.has_key('$jdb_key'):
+                if myColl is not None and myColl.__contains__('$jdb_key'):
                     return False
             #hash结构在insert过程中自动生成
             if not self.__insert(collection=coll['$jdb_coll'], data=coll[coll['$jdb_coll']], isMerge=1):
@@ -694,13 +692,14 @@ class JSONDB:
         tmpDb.__g_memDb = self.__json_load_byteified(fp)
         fp.close()
         #校验文件的合法性
+        #print(tmpDb.__g_memDb)
         md5InFile = tmpDb.__g_memDb['$jdb_md5']
         del tmpDb.__g_memDb['$jdb_md5']
         import hashlib
         myMd5 = hashlib.md5()
-        myMd5.update(json.dumps(tmpDb.__g_memDb,indent=0, encoding='utf-8', sort_keys=True))
+        myMd5.update(json.dumps(tmpDb.__g_memDb,indent=0,sort_keys=True).encode('utf-8'))
 
-        #print "import str:"+ json.dumps(tmpDb.__g_memDb,indent=0, encoding='utf-8', sort_keys=True)
+        #print("import str:"+ json.dumps(tmpDb.__g_memDb,indent=0, encoding='utf-8', sort_keys=True))
 
         if myMd5.hexdigest() != md5InFile:
             self.__debug('check md5 fail, make sure your file is created by exportToFile() function.')
@@ -725,15 +724,16 @@ class JSONDB:
         fp = open(path+fileName,'w+')
 
         import hashlib
-        if self.__g_memDb.has_key('$jdb_md5'):
+        if self.__g_memDb.__contains__('$jdb_md5'):
             del self.__g_memDb['$jdb_md5']
         myMd5 = hashlib.md5()
-        myMd5.update(json.dumps(self.__g_memDb,indent=0, encoding='utf-8', sort_keys=True))
+        myMd5.update(json.dumps(self.__g_memDb,indent=0, sort_keys=True).encode('utf-8'))
 
-        #print "export str:"+ json.dumps(self.__g_memDb,indent=0, encoding='utf-8', sort_keys=True)
+        #print("export str:"+ json.dumps(self.__g_memDb,indent=0, encoding='utf-8', sort_keys=True))
 
         self.__g_memDb['$jdb_md5'] = myMd5.hexdigest()
-        json.dump(self.__g_memDb,fp,indent=4, encoding='utf-8', sort_keys=True)
+        #print('%s md5 : %s' % (self.__g_memDb['$jdb'],self.__g_memDb['$jdb_md5]))
+        json.dump(self.__g_memDb,fp,indent=4, sort_keys=True)
         fp.close()
         return True
 
